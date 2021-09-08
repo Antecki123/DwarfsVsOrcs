@@ -29,8 +29,8 @@ public class Projectile : MonoBehaviour
         {
             other.SendMessage("TakeDamage", damage);
 
-            GameObject bleed = Instantiate(bleedingEffect, transform.position, transform.rotation);
-            Destroy(bleed, .2f);
+            GameObject bleed = Instantiate(bleedingEffect, transform.position + new Vector3(0, 0, .5f), transform.rotation);
+            Destroy(bleed, .5f);
 
             Destroy(gameObject, .1f);
         }

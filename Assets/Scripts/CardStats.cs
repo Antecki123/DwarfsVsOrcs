@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum DefenderType { Melee, Archer, Obstacle, Miner, Spell }
+public enum DefenderType { Melee, Crossbowman, Rifleman, Obstacle, Miner, Spell }
 
 [CreateAssetMenu(fileName = "New Deck", menuName = "Scriptable Objects/New Deck")]
 public class CardStats : ScriptableObject
@@ -20,4 +20,10 @@ public class CardStats : ScriptableObject
     public float damage;
 
     public float attackDelay;
+
+    [Header("Spells only")]
+    public GameObject spellPrefab;
+    public float spellRadius;
+    public float spellStrength;
+    public float spellTime;
 }

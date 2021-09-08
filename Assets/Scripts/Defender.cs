@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Defender : MonoBehaviour
@@ -8,6 +10,7 @@ public class Defender : MonoBehaviour
     public CardStats defenderStats;
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private GameObject smokePrefab;
+    [SerializeField] private GameObject bloodPrefab;
 
     [HideInInspector] public DefenderType defenderType;
     [HideInInspector] public GameObject activeTile;
@@ -34,8 +37,6 @@ public class Defender : MonoBehaviour
         Attack();
 
         KillCharacter();
-
-        UpdateAnimatorValues();
     }
 
     private void Attack()
@@ -47,7 +48,7 @@ public class Defender : MonoBehaviour
             MeleeAttack();
         }
 
-        else if (defenderType == DefenderType.Archer)
+        else if (defenderType == DefenderType.Crossbowman || defenderType == DefenderType.Rifleman)
         {
             target = FindTarget();
 
@@ -104,8 +105,7 @@ public class Defender : MonoBehaviour
         {
             if (defenderType == DefenderType.Obstacle)
             {
-                var smoke = Instantiate(smokePrefab, transform.position + new Vector3(0, 1.5f, 0), Quaternion.identity);
-                Destroy(smoke, .5f);
+
             }
             activeTile.GetComponent<Tile>().isOccupied = false;
             activeTile.GetComponent<Tile>().activeDefender = null;
@@ -114,7 +114,7 @@ public class Defender : MonoBehaviour
     }
 
     // UPDATE ANIMATIONS AND SOUNDS
-    private void UpdateAnimatorValues()
+    private void LateUpdate()
     {
         Animator animator = GetComponent<Animator>();
 
@@ -123,7 +123,9 @@ public class Defender : MonoBehaviour
             isAttacking = false;
             animator.SetTrigger("isAttacking");
 
-            if (defenderType == DefenderType.Archer)
+            if (defenderType == DefenderType.Crossbowman)
+                FindObjectOfType<AudioManager>().PlaySound("CrossbowFire");
+            else if (defenderType == DefenderType.Rifleman)
                 FindObjectOfType<AudioManager>().PlaySound("GunShot");
             else
                 FindObjectOfType<AudioManager>().PlaySound("SwordHit2");
@@ -132,9 +134,21 @@ public class Defender : MonoBehaviour
         if (health <= 0 && !isDead)
         {
             isDead = true;
-            animator.SetTrigger("isDead");
 
-            FindObjectOfType<AudioManager>().PlaySound("Death2");
+            if (defenderType == DefenderType.Obstacle)
+            {
+                gameObject.transform.GetChild(0).GetComponent<Animator>().Play("FenceCollaps_anim");
+                FindObjectOfType<AudioManager>().PlaySound("PalisadeCollapsing");
+
+                var smoke = Instantiate(smokePrefab, transform.position, Quaternion.identity);
+                smoke.transform.SetParent(gameObject.transform);
+                Destroy(smoke, 1f);
+            }
+            else
+            {
+                animator.SetTrigger("isDead");
+                FindObjectOfType<AudioManager>().PlaySound("Death2");
+            }
         }
     }
 
@@ -172,10 +186,19 @@ public class Defender : MonoBehaviour
                 timer = 0;
                 isAttacking = true;
 
+                StartCoroutine(BloodEffect());
                 DealDamage(target);
             }
         }
     }
+
+    IEnumerator BloodEffect()
+    {
+        yield return new WaitForSeconds(.5f);
+        var blood = Instantiate(bloodPrefab, target.transform.position, transform.rotation);
+        Destroy(blood, 1f);
+    }
+
     private void DealDamage(GameObject _target)
     {
         _target.SendMessage("TakeDamage", defenderStats.damage);

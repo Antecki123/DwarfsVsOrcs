@@ -13,11 +13,17 @@ public class GameStats : MonoBehaviour
 
     public static int currentMoney;
     public static float currentHealth;
+    [Space]
+    public GameObject gameoverScreen;
+    public GameObject winScreen;
+    public GameObject observator;
 
     [Space]
     public float waveDuration = 150f;
-    public static int activeWave = 1;
+    public static int waveCounter = 1;
     private float gameTimer;
+
+    public bool endgame = false;
 
     private void Awake()
     {
@@ -36,21 +42,21 @@ public class GameStats : MonoBehaviour
         DisplayTime(gameTimer);
 
         gameTimer -= Time.deltaTime;
-        if (gameTimer <= 0f)
+        if (gameTimer <= 0f && waveCounter < 3)
         {
+            observator.GetComponent<Animator>().Play("Terrified");
             FindObjectOfType<AudioManager>().PlaySound("Horn");
 
             gameTimer = waveDuration;
-            activeWave++;
+            waveCounter++;
         }
     }
 
     private void DisplayTime(float timeToDisplay)
     {
         if (timeToDisplay < 0)
-        {
             timeToDisplay = 0;
-        }
+
         float minutes = Mathf.FloorToInt(timeToDisplay / 60);
         float seconds = Mathf.FloorToInt(timeToDisplay % 60);
 
@@ -59,22 +65,26 @@ public class GameStats : MonoBehaviour
 
     private void WinCondition()
     {
-        /*
-        if (waveNumber == waveLength && GameObject.FindGameObjectsWithTag("Enemy") == null)
+        if (waveCounter == 3 && gameTimer <= 0 && !endgame)
         {
-            print("YOU WIN, noooob");
-            Time.timeScale = 0;
+            FindObjectOfType<AudioManager>().PlaySound("WinMusic");
+            observator.GetComponent<Animator>().Play("Victory");
+
+            endgame = true;
+            winScreen.SetActive(true);
+            Time.timeScale = .1f;
         }
-        */
     }
-    
+
     private void LoseCondition()
     {
-        if (currentHealth <= 0)
+        if (currentHealth <= 0 && !endgame)
         {
-            //print("YOU LOSE, noooob");
-            Time.timeScale = .2f;
+            observator.GetComponent<Animator>().Play("Crying");
+
+            endgame = true;
+            gameoverScreen.SetActive(true);
+            Time.timeScale = .1f;
         }
     }
-    
 }

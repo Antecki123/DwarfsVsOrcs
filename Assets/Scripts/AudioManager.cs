@@ -2,17 +2,19 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
+    public static AudioManager instance;
+
     [SerializeField]
     private Sound[] sounds;
-    private AudioSource audioSource;
+    public GameObject mainMusic;
 
-    public static AudioManager instance;
+    private AudioSource audioSource;
 
     private void Awake()
     {
         if (!instance)
             instance = this;
-        
+
         else
         {
             Destroy(gameObject);
@@ -42,6 +44,15 @@ public class AudioManager : MonoBehaviour
             return;
         audioSource.Play();
     }
+
+    public void SetMainVolume(float volume) => mainMusic.GetComponent<AudioSource>().volume = volume;
+    public void SetEffectsVolume(float volume)
+    {
+        foreach (Sound sound in sounds)
+            sound.volume = volume;
+
+        FindObjectOfType<AudioManager>().PlaySound("Death1");
+    }
 }
 
 [System.Serializable]
@@ -51,7 +62,7 @@ public class Sound
     public AudioClip audioClip;
 
     [Range(0f, 1f)]
-    public float volume = 1;
+    public float volume = 1f;
 
     [HideInInspector]
     public AudioSource audioSource;

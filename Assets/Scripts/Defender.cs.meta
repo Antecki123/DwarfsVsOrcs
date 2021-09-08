@@ -3,7 +3,12 @@ guid: 58bfb56e4fa281b4a82e7c456e0cf86d
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - defenderStats: {instanceID: 0}
+  - projectilePrefab: {instanceID: 0}
+  - smokePrefab: {instanceID: 0}
+  - bloodPrefab: {instanceID: 0}
+  - activeTile: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

@@ -39,56 +39,60 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        ActorMovement();
-
         KillActor();
 
-        UpdateAnimatorValues();
+        ActorMovement();
     }
 
     private void ActorMovement()
     {
         timer += Time.deltaTime;
-        if (target != null)
+        if (!isDead)
         {
-            navMeshAgent.destination = target.transform.position;
-
-            float attackDistance = 1f;
-            if ((transform.position - navMeshAgent.destination).magnitude <= attackDistance)
+            if (target != null)
             {
-                navMeshAgent.destination = transform.position;
-                transform.LookAt(target.transform.position);
+                navMeshAgent.destination = target.transform.position;
 
-                isMoving = false;
-
-                if (timer >= attackDelay)
+                float attackDistance = 1f;
+                if ((transform.position - navMeshAgent.destination).magnitude <= attackDistance)
                 {
-                    timer = 0;
-                    isAttacking = true;
+                    navMeshAgent.destination = transform.position;
+                    transform.LookAt(target.transform.position);
 
-                    DealDamage(target);
+                    isMoving = false;
+
+                    if (timer >= attackDelay)
+                    {
+                        timer = 0;
+                        isAttacking = true;
+
+                        DealDamage(target);
+                    }
                 }
             }
-        }
-        else
-        {
-            isMoving = true;
-            navMeshAgent.destination = finishPoint.position;
+            else
+            {
+                isMoving = true;
+                navMeshAgent.destination = finishPoint.position;
+            }
         }
     }
     private void KillActor()
     {
         int reward = 10;
-        if (health <= 0 && !isDead)
+        if (health <= 0 && isDead)
         {
             timer = 0;
             isMoving = false;
 
             gameObject.tag = "Untagged";
+            navMeshAgent.destination = transform.position;
             navMeshAgent.isStopped = true;
 
             GameStats.currentMoney += reward;
             Destroy(gameObject, 2f);
+
+            GetComponent<Enemy>().enabled = false;
         }
         // FINISH POINT
         else if ((transform.position - finishPoint.position).magnitude <= .5f)
@@ -99,38 +103,37 @@ public class Enemy : MonoBehaviour
     }
 
     // UPDATE ANIMATIONS AND SOUNDS
-    private void UpdateAnimatorValues()
+    private void LateUpdate()
     {
         animator.SetBool("isMoving", isMoving);
 
         if (isAttacking)
         {
             isAttacking = false;
-            animator.SetTrigger("isAttacking");
 
+            animator.SetTrigger("isAttacking");
             FindObjectOfType<AudioManager>().PlaySound("SwordHit1");
         }
 
         if (health <= 0 && !isDead)
         {
             isDead = true;
-            animator.SetTrigger("isDead");
 
+            animator.Play("die hard");
             FindObjectOfType<AudioManager>().PlaySound("Death1");
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.GetComponent<Projectile>() || other.GetComponent<CardSpells>())
+            return;
+
         currentTile = other.gameObject;
         if (currentTile.GetComponent<Tile>() && currentTile.GetComponent<Tile>().isOccupied)
-        {
             target = other.GetComponent<Tile>().activeDefender;
-        }
         else
-        {
             target = null;
-        }
     }
 
     private void DealDamage(GameObject _target)
