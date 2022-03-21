@@ -11,7 +11,7 @@ The player's task is to defend the village against the attacking orcs. He has ca
 - improve the options tab
 - change of resolution
 
-The current version 1.02
+###### The current version 1.02
 
 ### Screenshots
 ![Image](screenshot%201.png)
