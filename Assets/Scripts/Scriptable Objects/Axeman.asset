@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e05195ae76fad1c4e842223f8d379d50, type: 3}
+  m_Name: Axeman
+  m_EditorClassIdentifier: 
+  defenderType: 0
+  cardName: Dwarf Axeman
+  cardImage: {fileID: 21300000, guid: 4190d652b77f07548803f926e4eba765, type: 3}
+  defenderPrefab: {fileID: 5774813415232434070, guid: 08fc003b631c10f4bb88fcb53e400449, type: 3}
+  cardGold: 60
+  maxHealth: 100
+  damage: 20
+  attackDelay: 2

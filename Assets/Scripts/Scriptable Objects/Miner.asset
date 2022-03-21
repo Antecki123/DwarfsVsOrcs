@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e05195ae76fad1c4e842223f8d379d50, type: 3}
+  m_Name: Miner
+  m_EditorClassIdentifier: 
+  defenderType: 4
+  cardName: Dwarf Miner
+  cardImage: {fileID: 21300000, guid: 66f922dffc98f704d8419e6f30780d28, type: 3}
+  defenderPrefab: {fileID: 533992914407919008, guid: 10683efd58aa5cb43b0d5312ab4f93e1, type: 3}
+  cardGold: 20
+  maxHealth: 200
+  damage: 5
+  attackDelay: 2
